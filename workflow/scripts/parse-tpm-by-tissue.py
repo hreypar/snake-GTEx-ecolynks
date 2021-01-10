@@ -7,9 +7,12 @@ tissues_dict = {}
 with open(samples_filename,'r') as f:
     reader = csv.reader(f, delimiter="\t")
     for row in reader:
-        if row[5] not in tissues_dict:
-            tissues_dict[row[5]] = row[0]
-
+        tissue = row[5]
+        sample = row[0]
+        if tissue in tissues_dict:
+            tissues_dict[tissue].append(sample) # append to the list
+        else:
+            tissues_dict[tissue] = [sample] # make sure the value is a list
 
 # declare dictionary
 
