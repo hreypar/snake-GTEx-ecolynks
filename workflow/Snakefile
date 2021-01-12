@@ -1,16 +1,38 @@
 # The main entry point of workflow.
 # After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
 
-include: "rules/download.smk"
-#include: "rules/ref.smk"
-#include: "rules/qc.smk"
-#include: "rules/cutadapt.smk"
-#include: "rules/mapping.smk"
-#include: "rules/filtering.smk"
-#include: "rules/stats.smk"
-#include: "rules/utils.smk"
-#include: "rules/post-analysis.smk"
-#include: "rules/peak_analysis.smk"
+# source config variables
+configfile: "config/config.yaml"
 
-#rule all:
-#    input: all_input
+# first rule is downloading gtex rna-seq data (gene tpm)
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+
+HTTP = HTTPRemoteProvider()
+
+rule get_rnaseq:
+    input:
+        HTTP.remote(os.path.join(config["host"], config["rnaseq_file"]), keep_local=True)
+    output:
+        os.path.join("resources", config["rnaseq_file"])
+    run:
+        shell("mkdir -p `dirname output`")
+        shell("mv {input} {output}")
+
+# second rule is downloading gtex annotation file
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+
+HTTP = HTTPRemoteProvider()
+
+rule get_annotations:
+    input:
+        HTTP.remote(os.path.join(config["host"], config["annotations_file"]), keep_local=True)
+    output:
+        os.path.join("resources", config["annotations_file"])
+    run:
+        shell("mkdir -p `dirname output`")
+        shell("mv {input} {output}")
+
+
+
+# second rule is obtaining a dictionary of tissues from annotation files
+# third rule is selecting samples from a tissue from gene files
