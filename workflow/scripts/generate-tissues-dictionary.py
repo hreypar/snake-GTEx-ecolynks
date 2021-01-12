@@ -1,3 +1,7 @@
+__author__ = "Helena Reyes Gopar"
+
+import csv
+
 samples_filename = snakemake.input[0]
 
 # declare dictionary
@@ -18,8 +22,6 @@ with open(samples_filename,'r') as f:
 # see the keys with dict.keys(tissues_dict)
 
 # save the dictionary to a csv file
-import csv
-
 with open(snakemake.output[0], 'w') as f:
     writer = csv.writer(f)
     for key, value in tissues_dict.items():
