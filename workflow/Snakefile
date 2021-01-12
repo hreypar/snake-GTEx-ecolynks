@@ -36,21 +36,8 @@ rule tissues_dictionary:
     input:
         os.path.join("resources", config["annotations_file"])
     output:
-        "results/tissues_dictionary.csv"
+        "results/gtex_tissues_dictionary.csv"
     script:
         "scripts/generate-tissues-dictionary.py"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# third rule is selecting samples from a tissue from gene files
+### third rule is selecting samples from a tissue from gene files
