@@ -5,36 +5,40 @@
 configfile: "config/config.yaml"
 
 ########## RULES ##########
-# first rule is downloading gtex rna-seq data (gene tpm)
+### first rule is downloading gtex rna-seq data (gene tpm)
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 HTTP = HTTPRemoteProvider()
 
-rule get_rnaseq:
+rule download_rnaseq:
     input:
         HTTP.remote(os.path.join(config["host"], config["rnaseq_file"]), keep_local=True)
     output:
         os.path.join("resources", config["rnaseq_file"])
     shell:
-        "mkdir -p `dirname output`"
-        "mv {input} {output}"
+        "mv {input} {output}" #snakemake automatically creates missing directories
 
-# second rule is downloading gtex annotation file
+### second rule is downloading gtex annotation file
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 HTTP = HTTPRemoteProvider()
 
-rule get_annotations:
+rule download_annotations:
     input:
         HTTP.remote(os.path.join(config["host"], config["annotations_file"]), keep_local=True)
     output:
         os.path.join("resources", config["annotations_file"])
     shell:
-        "mkdir -p `dirname output`"
         "mv {input} {output}"
 
-# third rule is obtaining a dictionary of tissues from annotation files
-
+### third rule is obtaining a dictionary of tissues from annotation files
+rule tissues_dictionary:
+    input:
+        os.path.join("resources", config["annotations_file"])
+    output:
+        "results/tissues_dictionary.csv"
+    script:
+        "scripts/generate-tissues-dictionary.py"
 
 
 
