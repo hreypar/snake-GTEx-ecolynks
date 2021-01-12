@@ -1,4 +1,4 @@
-samples_filename = "GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt"
+samples_filename = snakemake.input[0]
 
 # declare dictionary
 tissues_dict = {}
@@ -20,8 +20,7 @@ with open(samples_filename,'r') as f:
 # save the dictionary to a csv file
 import csv
 
-with open('filename', 'w') as f:
-    c = csv.writer(f)
-
-    for key, value in d.items():
-        c.writerow([key] + value
+with open(snakemake.output[0], 'w') as f:
+    writer = csv.writer(f)
+    for key, value in tissues_dict.items():
+        writer.writerow([key] + value)
