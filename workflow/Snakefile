@@ -41,3 +41,8 @@ rule tissues_dictionary:
         "scripts/generate-tissues-dictionary.py"
 
 ### third rule is selecting samples from a tissue from gene files
+rule select_samples:
+    input:
+        tissues_dict="results/gtex_tissues_dictionary.csv",
+        rnaseq_data=os.path.join("resources", config["rnaseq_file"])
+    output:
